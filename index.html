@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title>股票选择工具</title>
+    <link rel="stylesheet" href="//at.alicdn.com/t/c/font_3881569_npinyoztrbq.css" type="text/css" />
+        <script src="https://code.jquery.com/jquery-2.1.1.js"></script>   
+  <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+<!-- plus a jQuery UI theme, here I use "flick" -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
+    <script crossorigin="anonymous" integrity="sha512-weWXHm0Ws2cZKjjwugRMnnOAx9uCP/wUVf84W7/fXQimwYUK28zPDGPprDozomQLpKv6U99xN9PI9+yLI9qxNw==" src="https://lib.baomitu.com/echarts/5.3.2/echarts.min.js"></script>
+    <script>
+      //设置当前页面的状态是不是
+      //0  查看当前的这个位置相同的状态
+      
+      var this_view_type =sessionStorage.getItem("this_view_type")?sessionStorage.getItem("this_view_type"):0;
+
+      function setDayMarkPoint(array1, num_type_array, time1, num_type) {
+        let array2 = [];
+        let type1 = ["买进", "卖出", "持有", "加仓", "等待"];
+        if (this_view_type == 0) {
+          return []
+        }
+        let this_length = array1[0].length - 1
+        array1[0].forEach((item, index) => {
+          try {
+            array1.forEach((item2, index2) => {
+              let deal_array_item = (num) => {
+                return parseFloat(num_type_array[index2] == 0 ? array1[index2][num] : parseFloat(array1[
+                  index2][num]) - parseFloat(array1[index2][
+                  num - 1
+                ]));
+              }
+              let this_num = deal_array_item(index)
+              let this_num_type = this_num > 0 ? true : false
+              let this_num2 = deal_array_item(this_length)
+              let this_num_type2 = this_num2 > 0 ? true : false
+              if (this_num_type == this_num_type2) {
+                if (index2 == (array1.length - 1)) {
+                  let item1 = {
+                    name: "买卖操作逻辑",
+                    value: type1[this_num_type2 == true ? 1 : 0],
+                    xAxis: time1[index],
+                    yAxis: parseFloat(item),
+                    itemStyle: {
+                      color: this_num_type2 == true ? "red" : '#7cffb2',
+                    },
+                  };
+                  array2.push(item1);
+                }
+              } else {
+                throw new Error("EndIterative")
+              }
+            })
+          } catch (e) {
+            if (e.message !== "EndIterative") throw e
+          }
+        })
+
+        return [{
+          data: array2,
+        }]
+
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+</html>

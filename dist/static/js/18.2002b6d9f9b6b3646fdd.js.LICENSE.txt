@@ -1,0 +1,5 @@
+/*! For license information please see LunarFullCalendar.min.js.LICENSE */
+
+//! moment.js
+
+//! moment.js locale configuration
